@@ -1,0 +1,4 @@
+{
+  "elasticsearch" : "http://localhost:8081/elasticsearch",
+  "graphiteUrl"   : "http://localhost:8080/graphite"
+}

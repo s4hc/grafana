@@ -42,6 +42,9 @@ function (Settings) {
 
      */
 
+    //S4HC AJ: Graphite render request method
+    render_method: "GET",
+
     default_route: '/dashboard/file/default.json',
 
     /**

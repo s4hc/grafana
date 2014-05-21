@@ -13,7 +13,8 @@
     },
     freeInput: true,
     maxTags: undefined,
-    confirmKeys: [13],
+      //S4HC AJ: added space (32) tag as tags separator
+    confirmKeys: [32,13],
     onTagExists: function(item, $tag) {
       $tag.hide().fadeIn();
     }

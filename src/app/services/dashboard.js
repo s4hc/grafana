@@ -101,7 +101,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
         if (Modernizr.localstorage) {
           if(!(_.isUndefined(window.localStorage['dashboard'])) && window.localStorage['dashboard'] !== '') {
             $location.path(config.default_route);
-            alertSrv.set('Saving to browser storage has been replaced',' with saving to Elasticsearch.'+
+            alertSrv.set('Saving to browser storage has been replaced',' with saving to GridMetrics.'+
               ' Click <a href="#/dashboard/local/deprecated">here</a> to load your old dashboard anyway.');
           } else if(!(_.isUndefined(window.localStorage.grafanaDashboardDefault))) {
             $location.path(window.localStorage.grafanaDashboardDefault);
@@ -267,7 +267,7 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
             content: 'This dashboard has been loaded from the browsers local cache. If you use '+
             'another brower or computer you will not be able to access it! '+
             '\n\n  <h4>Good news!</h4> Kibana'+
-            ' now stores saved dashboards in Elasticsearch. Click the <i class="icon-save"></i> '+
+            ' now stores saved dashboards in GridMetrics. Click the <i class="icon-save"></i> '+
             'button in the top left to save this dashboard. Then select "Set as Home" from'+
             ' the "advanced" sub menu to automatically use the stored dashboard as your Kibana '+
             'landing page afterwards'+
@@ -314,8 +314,8 @@ function (angular, $, kbn, _, config, moment, Modernizr) {
       return $http(options)
       .error(function(data, status) {
         if(status === 0) {
-          alertSrv.set('Error',"Could not contact Elasticsearch at "+config.elasticsearch+
-            ". Please ensure that Elasticsearch is reachable from your system." ,'error');
+          alertSrv.set('Error',"Could not contact GridMetrics at "+config.elasticsearch+
+            ". Please ensure that GridMetrics is reachable from your system." ,'error');
         } else {
           alertSrv.set('Error',"Could not find "+id+". If you"+
             " are using a proxy, ensure it is configured correctly",'error');

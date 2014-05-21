@@ -1,0 +1,10 @@
+
+\\ Erases filters
+
+("options":) \[[\s.*][^\]]*\]
+$1 []
+
+\\ Sets time range to last 7 days
+
+("time":) \{[\s*][^}]*}
+$1 {\n\t\t\t\t"from": "now-7d",\n\t\t\t\t"to": "now"\n\t\t\t}

@@ -13,11 +13,14 @@ function (_, crypto) {
      * @type {Object}
      */
     var defaults = {
-      elasticsearch                 : "http://"+window.location.hostname+":9200",
+      elasticsearch                 : "http://"+window.location.host+"/elasticsearch",
       datasources                   : {
         default: {
-          url: "http://"+window.location.hostname+":8080",
-          default: true
+          type: 'graphite',
+          url: "http://"+window.location.host+"/graphite",
+          default: true,
+          //S4HC AJ: configurable render method from config.js
+          render_method: options.render_method
         }
       },
       panel_names                   : [],
@@ -55,16 +58,47 @@ function (_, crypto) {
       return datasource;
     };
 
+    /**
+     * S4HC AJ: Update defaults from GridMetrics server
+     *
+     *
+    $.ajax({
+      url     : "restConfig.json",
+      async   : false
+    })
+      .done(function( json ) {
+        settings.elasticsearch = json.elasticsearch;
+        settings.datasources = {
+          graphite: {
+            type: 'graphite',
+            url: json.graphiteUrl,
+            //S4HC AJ: configurable render method from config.js
+            render_method: options.render_method,
+            default: true
+          }
+        };
+      })
+      .fail(function( jqxhr, textStatus, error ) {
+        var err = textStatus + ", " + error;
+        console.log( "GridMetrics defaults not loaded: " + err );
+      });
+     */
     if (options.graphiteUrl) {
       settings.datasources = {
         graphite: {
           type: 'graphite',
           url: options.graphiteUrl,
+          //S4HC AJ: configurable render method from config.js
+          render_method: options.render_method,
           default: true
         }
       };
     }
 
+    // S4HC AJ: Config.js overrides GridMetrics defaults
+    if (options.elasticsearch) {
+      settings.elasticsearch = options.elasticsearch;
+    }
     _.each(settings.datasources, function(datasource, key) {
       datasource.name = key;
       parseBasicAuth(datasource);

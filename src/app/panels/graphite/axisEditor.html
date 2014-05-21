@@ -71,7 +71,8 @@
   <div class="section">
     <h5>Legend</h5>
     <div class="editor-option">
-      <label class="small">Show Legend</label><input type="checkbox" ng-model="panel.legend.show" ng-checked="panel.legend.show" ng-change="render();">
+      <label class="small">Show Legend</label><input type="checkbox" ng-model="panel.legend.show" ng-checked="panel.legend.show" ng-change="render();"><span class="small">Dashboard</span>
+        <input type="checkbox" ng-model="panel.legend.showFullscreen" ng-checked="panel.legend.showFullscreen" ng-change="render();"><span class="small">Full Screen</span>
     </div>
     <div class="editor-option">
       <label class="small">Include Values</label><input type="checkbox" ng-model="panel.legend.values" ng-checked="panel.legend.values" ng-change="render();">

@@ -68,11 +68,11 @@ function (angular, _, moment) {
       dashboard.elasticsearch_save(type, dashboard.current.title, ttl)
         .then(function(result) {
           if(_.isUndefined(result._id)) {
-            alertSrv.set('Save failed','Dashboard could not be saved to Elasticsearch','error',5000);
+            alertSrv.set('Save failed','Dashboard could not be saved to GridMetrics','error',5000);
             return;
           }
 
-          alertSrv.set('Dashboard Saved', 'Dashboard has been saved to Elasticsearch as "' + result._id + '"','success', 5000);
+          alertSrv.set('Dashboard Saved', 'Dashboard has been saved to GridMetrics as "' + result._id + '"','success', 5000);
           if(type === 'temp') {
             $scope.share = dashboard.share_link(dashboard.current.title,'temp',result._id);
           }
@@ -95,7 +95,7 @@ function (angular, _, moment) {
               var toDelete = _.where($scope.elasticsearch.dashboards,{_id:id})[0];
               $scope.elasticsearch.dashboards = _.without($scope.elasticsearch.dashboards,toDelete);
             } else {
-              alertSrv.set('Dashboard Not Found','Could not find '+id+' in Elasticsearch','warning',5000);
+              alertSrv.set('Dashboard Not Found','Could not find '+id+' in GridMetrics','warning',5000);
             }
           } else {
             alertSrv.set('Dashboard Not Deleted','An error occurred deleting the dashboard','error',5000);

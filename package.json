@@ -7,7 +7,7 @@
   "version": "1.5.4",
   "repository": {
     "type": "git",
-    "url": "http://github.com/torkelo/grafana.git"
+    "url": "https://github.com/s4hc/grafana.git"
   },
   "devDependencies": {
     "rjs-build-analysis": "0.0.3",

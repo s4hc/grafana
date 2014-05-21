@@ -146,7 +146,9 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
        * legend:: Display the legend
        */
       legend: {
-        show: true, // disable/enable legend
+        show: false, // disable/enable legend
+        //S4HC AJ: Added option for legend in full screen
+        showFullscreen: true,
         values: false, // disable/enable legend values
         min: false,
         max: false,
@@ -166,7 +168,8 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
        */
       zerofill      : true,
 
-      nullPointMode : 'connected',
+      //S4HC AJ: changed from 'connected'
+      nullPointMode : 'null',
 
       steppedLine: false,
 
@@ -205,6 +208,10 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.initBaseController(this, $scope);
 
       $scope.fullscreen = false;
+      //S4HC AJ: Shows legends depending on show/fullscreen settings
+      $scope.isLegendVisible = function(){
+        return (($scope.panel.legend.show && !$scope.fullscreen) || ($scope.panel.legend.showFullscreen && $scope.fullscreen));
+      };
       $scope.editor = { index: 1 };
       $scope.editorTabs = _.pluck($scope.panelMeta.fullEditorTabs,'title');
       $scope.hiddenSeries = {};

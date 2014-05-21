@@ -26,8 +26,14 @@ function (angular, app, _) {
     };
     _.defaults($scope.panel,_d);
 
-    $scope.init = function() {
+    $scope.init = function () {
       $scope.filterSrv = filterSrv;
+      //S4HC AJ: If filter options are empty apply filters
+      _.each(filterSrv.list, function (filter) {
+        if (filter.options.length === 0) {
+          $scope.applyFilter(filter);
+        }
+      });
     };
 
     $scope.remove = function(filter) {
@@ -56,9 +62,13 @@ function (angular, app, _) {
       datasourceSrv.default.metricFindQuery(query)
         .then(function (results) {
           filter.editing=undefined;
-          filter.options = _.map(results, function(node) {
-            return { text: node.text, value: node.text };
-          });
+          //S4HC AJ: Excluded leafs from filter list
+          filter.options = _.filter(results,function(node) {
+              return node.expandable;
+            })
+              .map(function(node) {
+              return { text: node.text, value: node.text };
+            });
 
           if (filter.includeAll) {
             var allExpr = '{';
@@ -79,6 +89,8 @@ function (angular, app, _) {
         name      : 'filter name',
         editing   : true,
         query     : 'metric.path.query.*',
+        //S4HC AJ: Include all turned on by default
+        includeAll: true
       });
     };
 

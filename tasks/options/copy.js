@@ -4,7 +4,9 @@ module.exports = function(config) {
     everything_but_less_to_temp: {
       cwd: '<%= srcDir %>',
       expand: true,
-      src: ['**/*', '!**/*.less', '!config.js'],
+      // S4HC: Original line
+      // src: ['**/*', '!**/*.less', '!config.js'],
+      src: ['**/*', '!**/*.less', '!img/psd/*'],
       dest: '<%= tempDir %>'
     }
   };

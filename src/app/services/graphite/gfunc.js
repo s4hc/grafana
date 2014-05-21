@@ -84,7 +84,18 @@ function (_) {
   addFuncDef({
     name: 'sumSeriesWithWildcards',
     category: categories.Combine,
-    params: [ { name: "node", type: "int" } ],
+    params: [ { name: "node", type: "int" },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true },
+        { name: "node", type: "int", optional: true }
+        ],
     defaultParams: [3]
   });
 
@@ -103,7 +114,18 @@ function (_) {
   addFuncDef({
     name: 'averageSeriesWithWildcards',
     category: categories.Combine,
-    params: [ { name: "node", type: "int" } ],
+    params: [ { name: "node", type: "int" },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true }
+      ],
     defaultParams: [3]
   });
 
@@ -163,8 +185,14 @@ function (_) {
     name: 'aliasByNode',
     category: categories.Special,
     params: [
-      { name: "node", type: "int", options: [0,1,2,3,4,5,6,7,8,9,10,12] },
-      { name: "node", type: "int", options: [0,-1,-2,-3,-4,-5,-6,-7], optional: true },
+      { name: "node", type: "int" },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true },
+      { name: "node", type: "int", optional: true }
     ],
     defaultParams: [3]
   });
@@ -261,6 +289,11 @@ function (_) {
 
   addFuncDef({
     name: 'derivative',
+    category: categories.Transform,
+  });
+
+  addFuncDef({
+    name: 'perSecond',
     category: categories.Transform,
   });
 

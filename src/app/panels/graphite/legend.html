@@ -1,4 +1,4 @@
-<span ng-show="panel.legend.show"
+<span ng-show="isLegendVisible()"
       ng-class="{'pull-right': series.yaxis === 2, 'hidden-series': hiddenSeries[series.alias]}"
       ng-repeat='series in legend'
       class="histogram-legend">

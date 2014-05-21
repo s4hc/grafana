@@ -54,7 +54,8 @@ function (angular, $, kbn, moment, _) {
 
             height = height - 32; // subtract panel title bar
 
-            if (scope.panel.legend.show) {
+            //S4HC AJ: Update to reflect visibility in fullscreen/dash mode
+            if (scope.isLegendVisible()) {
               height = height - 21; // subtract one line legend
             }
 
