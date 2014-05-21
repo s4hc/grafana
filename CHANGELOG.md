@@ -1,4 +1,8 @@
-# vNext
+vNext
+- New Y-axis formater for metric values that represent seconds (Issue #427) - thx @jippi
+
+# 1.5.4 (2014-05-13)
+### New features and improvements
 - InfluxDB enhancement: support for multiple hosts (with retries) and raw queries (Issue #318, thx @toddboom)
 - Added rounding for graphites from and to time range filters
   for very short absolute ranges (Issue #320)
@@ -6,6 +10,14 @@
 - Improvement to influxdb query editor, can now add where clause and alias (Issue #331, thanks @mavimo)
 - New config setting for graphite datasource to control if json render request is POST or GET (Issue #345)
 - Unsaved changes warning feature (Issue #324)
+- Improvement to series toggling, CTRL+MouseClick on series name will now hide all others (Issue #350)
+
+### Changes
+- Graph default setting for Y-Min changed from zero to auto scalling (will not effect existing dashboards). (Issue #386) - thx @kamaradclimber
+
+### Fixes
+- Fixes to filters and "All" option. It now never uses "*" as value, but all options in a {node1, node2, node3} expression (Issue #228, #359)
+- Fix for InfluxDB query generation with columns containing dots or dashes (Issue #369, #348) - Thanks to @jbripley
 
 
 # 1.5.3 (2014-04-17)

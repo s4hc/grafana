@@ -12,7 +12,8 @@ require.config({
     'underscore-src':      '../vendor/underscore',
 
     moment:                '../vendor/moment',
-    chromath:                 '../vendor/chromath',
+    chromath:              '../vendor/chromath',
+    filesaver:             '../vendor/filesaver',
 
     angular:               '../vendor/angular/angular',
     angularMocks:          '../vendor/angular/angular-mocks',
@@ -25,9 +26,10 @@ require.config({
     crypto:                   '../vendor/crypto.min',
     spectrum:                 '../vendor/spectrum',
 
-    jquery:                '../vendor/jquery/jquery-1.8.0',
+    jquery:                   '../vendor/jquery/jquery-1.8.0',
 
-    bootstrap:             '../vendor/bootstrap/bootstrap',
+    bootstrap:                '../vendor/bootstrap/bootstrap',
+    'bootstrap-tagsinput':    '../vendor/tagsinput/bootstrap-tagsinput',
 
     'jquery-ui':              '../vendor/jquery/jquery-ui-1.10.3',
 
@@ -93,6 +95,9 @@ require.config({
     'bindonce':             ['angular'],
     'angular-strap':        ['angular', 'bootstrap','timepicker', 'datepicker'],
 
+    'bootstrap-tagsinput':          ['jquery'],
+
+
     timepicker:             ['jquery', 'bootstrap'],
     datepicker:             ['jquery', 'bootstrap'],
 
@@ -103,11 +108,22 @@ require.config({
 require([
   'angular',
   'angularMocks',
+  'jquery',
+  'underscore',
+  'elasticjs',
+  'bootstrap',
+  'angular-sanitize',
+  'angular-strap',
+  'angular-dragdrop',
+  'extend-jquery',
+  'bindonce'
 ], function(angular) {
   'use strict';
 
   angular.module('kibana', []);
-  angular.module('kibana.services', []);
+  angular.module('kibana.services', ['$strap.directives']);
+  angular.module('kibana.panels', []);
+  angular.module('kibana.filters', []);
 
   require([
     'specs/lexer-specs',

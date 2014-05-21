@@ -566,6 +566,10 @@ function($, _, moment) {
       return function(val) {
         return kbn.bitFormat(val, decimals);
       };
+    case 's':
+      return function(val) {
+        return kbn.sFormat(val, decimals);
+      };
     case 'ms':
       return function(val) {
         return kbn.msFormat(val, decimals);
@@ -573,6 +577,10 @@ function($, _, moment) {
     case 'µs':
       return function(val) {
         return kbn.microsFormat(val, decimals);
+      };
+    case 'ns':
+      return function(val) {
+        return kbn.nanosFormat(val, decimals);
       };
     default:
       return function(val) {
@@ -605,6 +613,27 @@ function($, _, moment) {
     return (size / 31536000000).toFixed(decimals) + " year";
   };
 
+  kbn.sFormat = function(size, decimals) {
+    // Less than 10 min, use seconds
+    if (size < 600) {
+      return size.toFixed(decimals) + " s";
+    }
+    // Less than 1 hour, devide in minutes
+    else if (size < 3600) {
+      return (size / 60).toFixed(decimals) + " min";
+    }
+    // Less than one day, devide in hours
+    else if (size < 86400) {
+      return (size / 3600).toFixed(decimals) + " hour";
+    }
+    // Less than one week, devide in days
+    else if (size < 604800) {
+      return (size / 86400).toFixed(decimals) + " day";
+    }
+
+    return (size / 3.15569e7).toFixed(decimals) + " year";
+  };
+
   kbn.microsFormat = function(size, decimals) {
     if (size < 1000) {
       return size.toFixed(0) + " µs";
@@ -614,6 +643,24 @@ function($, _, moment) {
     }
     else {
       return (size / 1000000).toFixed(decimals) + " s";
+    }
+  };
+
+  kbn.nanosFormat = function(size, decimals) {
+    if (size < 1000) {
+      return size.toFixed(0) + " ns";
+    }
+    else if (size < 1000000) {
+      return (size / 1000).toFixed(decimals) + " µs";
+    }
+    else if (size < 1000000000) {
+      return (size / 1000000).toFixed(decimals) + " ms";
+    }
+    else if (size < 60000000000){
+      return (size / 1000000000).toFixed(decimals) + " s";
+    }
+    else {
+      return (size / 60000000000).toFixed(decimals) + " m";
     }
   };
 

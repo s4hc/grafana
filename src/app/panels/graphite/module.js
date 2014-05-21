@@ -19,6 +19,9 @@ define([
   'kbn',
   'moment',
   './timeSeries',
+  'services/filterSrv',
+  'services/annotationsSrv',
+  'services/datasourceSrv',
   'jquery.flot',
   'jquery.flot.events',
   'jquery.flot.selection',
@@ -84,7 +87,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
        */
       scale         : 1,
       /** @scratch /panels/histogram/3
-       * y_formats :: 'none','bytes','bits','short', 'ms'
+       * y_formats :: 'none','bytes','bits','short', 's', 'ms'
        */
       y_formats    : ['short', 'short'],
       /** @scratch /panels/histogram/5
@@ -94,7 +97,7 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
        */
       grid          : {
         max: null,
-        min: 0,
+        min: null,
         threshold1: null,
         threshold2: null,
         threshold1Color: 'rgba(216, 200, 27, 0.27)',
@@ -346,15 +349,53 @@ function (angular, app, $, _, kbn, moment, timeSeries) {
       $scope.render();
     };
 
-    $scope.toggleSeries = function(info) {
-      if ($scope.hiddenSeries[info.alias]) {
-        delete $scope.hiddenSeries[info.alias];
+    $scope.toggleSeries = function(serie, event) {
+      if ($scope.hiddenSeries[serie.alias]) {
+        delete $scope.hiddenSeries[serie.alias];
       }
       else {
-        $scope.hiddenSeries[info.alias] = true;
+        $scope.hiddenSeries[serie.alias] = true;
       }
 
-      $scope.$emit('toggleLegend', info.alias);
+      if (event.ctrlKey) {
+        $scope.toggleSeriesExclusiveMode(serie);
+      }
+
+      $scope.$emit('toggleLegend', $scope.legend);
+    };
+
+    $scope.toggleSeriesExclusiveMode = function(serie) {
+      var hidden = $scope.hiddenSeries;
+
+      if (hidden[serie.alias]) {
+        delete hidden[serie.alias];
+      }
+
+      // check if every other series is hidden
+      var alreadyExclusive = _.every($scope.legend, function(value) {
+        if (value.alias === serie.alias) {
+          return true;
+        }
+
+        return hidden[value.alias];
+      });
+
+      if (alreadyExclusive) {
+        // remove all hidden series
+        _.each($scope.legend, function(value) {
+          delete $scope.hiddenSeries[value.alias];
+        });
+      }
+      else {
+        // hide all but this serie
+        _.each($scope.legend, function(value) {
+          if (value.alias === serie.alias) {
+            return;
+          }
+
+          $scope.hiddenSeries[value.alias] = true;
+        });
+      }
     };
 
     $scope.toggleYAxis = function(info) {
