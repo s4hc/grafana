@@ -6,3 +6,4 @@ tmp
 web.config
 config.js
 *.sublime-workspace
+*.log
