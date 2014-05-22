@@ -1,6 +1,8 @@
+node
 node_modules
 .aws-config.json
 dist
+tmp
 web.config
 config.js
 *.sublime-workspace

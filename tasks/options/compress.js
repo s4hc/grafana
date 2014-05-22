@@ -38,7 +38,7 @@ module.exports = function(config) {
     },
     zip_release: {
       options: {
-        archive: '<%= tempDir %>/<%= pkg.name %>-<%= pkg.version %>.zip'
+        archive: '<%= targetDir %>/<%= pkg.name %>-<%= pkg.version %>.zip'
       },
       files : [
         {
@@ -56,7 +56,7 @@ module.exports = function(config) {
     },
     tgz_release: {
       options: {
-        archive: '<%= tempDir %>/<%= pkg.name %>-<%= pkg.version %>.tar.gz'
+        archive: '<%= targetDir %>/<%= pkg.name %>-<%= pkg.version %>.tar.gz'
       },
       files : [
         {

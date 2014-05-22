@@ -3,8 +3,8 @@
     "name": "Torkel Ödegaard",
     "company": "Coding Instinct AB"
   },
-  "name": "grafana",
-  "version": "1.5.4",
+  "name": "gridmetrics",
+  "version": "1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/s4hc/grafana.git"
