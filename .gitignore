@@ -7,3 +7,6 @@ web.config
 config.js
 *.sublime-workspace
 *.log
+bootstrap-responsive.min.css
+bootstrap.dark.min.css
+bootstrap.light.min.css
