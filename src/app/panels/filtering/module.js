@@ -71,15 +71,29 @@ function (angular, app, _) {
             });
 
           if (filter.includeAll) {
-            var allExpr = '{';
-            _.each(filter.options, function(option) {
-              allExpr += option.text + ',';
-            });
-            allExpr = allExpr.substring(0, allExpr.length - 1) + '}';
-            filter.options.unshift({text: 'All', value: allExpr});
+            // S4HC AJ: Rollback of previous 1.5.3 behaviour
+            if(endsWithWildcard(filter.query)) {
+              filter.options.unshift({text: 'All', value: '*'});
+            }
+            else {
+              var allExpr = '{';
+              _.each(filter.options, function(option) {
+                allExpr += option.text + ',';
+              });
+              allExpr = allExpr.substring(0, allExpr.length - 1) + '}';
+              filter.options.unshift({text: 'All', value: allExpr});
+            }
           }
-
-          filterSrv.filterOptionSelected(filter, filter.options[0]);
+          // S4HC AJ: Keep selected filter if exist in filter
+          // TODO: Test what is happening when current filter doesn't exsist anymore
+          var currentFilter = _.omit(filter.current, "$$hashKey");
+          var selectedFilter;
+          if (currentFilter.value==='*') {
+            selectedFilter =  filter.options[0];
+          } else {
+            selectedFilter =_.findWhere(filter.options, currentFilter) || filter.options[0]
+          }
+          filterSrv.filterOptionSelected(filter, selectedFilter);
         });
     };
 
@@ -101,6 +115,14 @@ function (angular, app, _) {
     $scope.render = function() {
       $rootScope.$broadcast('render');
     };
+    // S4HC AJ: Rollback of previous 1.5.3 behaviour
+    function endsWithWildcard(query) {
+      if (query.length === 0) {
+        return false;
+      }
+
+      return query[query.length - 1] === '*';
+    }
 
   });
 });

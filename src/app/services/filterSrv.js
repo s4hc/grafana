@@ -24,8 +24,19 @@ define([
 
       _.defaults(dashboard.current.services.filter, _d);
 
-      self.list = dashboard.current.services.filter.list;
-      self.time = dashboard.current.services.filter.time;
+      // S4HC AJ: Preserve selected filters if they exist
+      self.list = _.map(dashboard.current.services.filter.list, function(filter){
+        var match = _.findWhere(self.list, {name : filter.name, query:filter.query});
+        if (!_.isUndefined(match)) {
+          filter.current = _.omit(match.current,'$$hashKey');
+        }
+        return filter;
+      });
+
+      // S4HC AJ: Load time range only first time
+      if (_.isEmpty(self.time)) {
+        self.time = dashboard.current.services.filter.time;
+      }
 
       self.templateSettings = {
         interpolate : /\[\[([\s\S]+?)\]\]/g,
