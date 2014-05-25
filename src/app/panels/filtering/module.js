@@ -46,11 +46,14 @@ function (angular, app, _) {
     };
 
     $scope.applyFilterToOtherFilters = function(updatedFilter) {
+      console.log('apply for:'+updatedFilter.name+' - '+updatedFilter.query);
       _.each(filterSrv.list, function(filter) {
         if (filter === updatedFilter) {
+          console.log('\tapply: same');
           return;
         }
         if (filter.query.indexOf(updatedFilter.name) !== -1) {
+          console.log('\tapply: filter '+ filter.name + ' contains ' + updatedFilter.name);
           $scope.applyFilter(filter);
         }
       });
@@ -61,6 +64,7 @@ function (angular, app, _) {
 
       datasourceSrv.default.metricFindQuery(query)
         .then(function (results) {
+          console.log('\t\toptions start: filter '+ filter.name + ' > '+_.pluck(filter.options,'text').join(","));
           filter.editing=undefined;
           //S4HC AJ: Excluded leafs from filter list
           filter.options = _.filter(results,function(node) {
@@ -69,7 +73,7 @@ function (angular, app, _) {
               .map(function(node) {
               return { text: node.text, value: node.text };
             });
-
+          console.log('\t\toptions aj:filter '+ filter.name + ' > '+_.pluck(filter.options,'text').join(","));
           if (filter.includeAll) {
             // S4HC AJ: Rollback of previous 1.5.3 behaviour
             if(endsWithWildcard(filter.query)) {
@@ -84,6 +88,8 @@ function (angular, app, _) {
               filter.options.unshift({text: 'All', value: allExpr});
             }
           }
+          console.log('\t\toptions end:filter '+ filter.name + ' > '+_.pluck(filter.options,'text').join(","));
+
           // S4HC AJ: Keep selected filter if exist in filter
           // TODO: Test what is happening when current filter doesn't exsist anymore
           var currentFilter = _.omit(filter.current, "$$hashKey");
