@@ -3,9 +3,14 @@ node_modules
 .aws-config.json
 dist
 tmp
+
+# locally required config files
 web.config
+
+# Editor junk
 *.sublime-workspace
 *.log
 bootstrap-responsive.min.css
 bootstrap.dark.min.css
 bootstrap.light.min.css
+*.swp

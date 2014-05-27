@@ -14,7 +14,7 @@ function (angular, app, _) {
   var module = angular.module('kibana.panels.filtering', []);
   app.useModule(module);
 
-  module.controller('filtering', function($scope, filterSrv, datasourceSrv, $rootScope, dashboard) {
+  module.controller('filtering', function($scope, datasourceSrv, $rootScope, $timeout, $q) {
 
     $scope.panelMeta = {
       status  : "Stable",
@@ -36,49 +36,51 @@ function (angular, app, _) {
       });
     };
 
-    $scope.remove = function(filter) {
-      filterSrv.remove(filter);
+    $scope.remove = function(templateParameter) {
+      $scope.filter.removeTemplateParameter(templateParameter);
     };
 
-    $scope.filterOptionSelected = function(filter, option) {
-      filterSrv.filterOptionSelected(filter, option);
-      $scope.applyFilterToOtherFilters(filter);
+    $scope.filterOptionSelected = function(templateParameter, option, recursive) {
+      templateParameter.current = option;
+
+      $scope.filter.updateTemplateData();
+
+      return $scope.applyFilterToOtherFilters(templateParameter)
+        .then(function() {
+          // only refresh in the outermost call
+          if (!recursive) {
+            $scope.dashboard.refresh();
+          }
+        });
     };
 
-    $scope.applyFilterToOtherFilters = function(updatedFilter) {
-      console.log('apply for:'+updatedFilter.name+' - '+updatedFilter.query);
-      _.each(filterSrv.list, function(filter) {
-        if (filter === updatedFilter) {
-          console.log('\tapply: same');
+    $scope.applyFilterToOtherFilters = function(updatedTemplatedParam) {
+      var promises = _.map($scope.filter.templateParameters, function(templateParam) {
+        if (templateParam === updatedTemplatedParam) {
           return;
         }
-        if (filter.query.indexOf(updatedFilter.name) !== -1) {
-          console.log('\tapply: filter '+ filter.name + ' contains ' + updatedFilter.name);
-          $scope.applyFilter(filter);
+        if (templateParam.query.indexOf(updatedTemplatedParam.name) !== -1) {
+          return $scope.applyFilter(templateParam);
         }
       });
+
+      return $q.all(promises);
     };
 
-    $scope.applyFilter = function(filter) {
-      var query = filterSrv.applyFilterToTarget(filter.query);
-
-      datasourceSrv.default.metricFindQuery(query)
+    $scope.applyFilter = function(templateParam) {
+      return datasourceSrv.default.metricFindQuery($scope.filter, templateParam.query)
         .then(function (results) {
-          console.log('\t\toptions start: filter '+ filter.name + ' > '+_.pluck(filter.options,'text').join(","));
-          filter.editing=undefined;
-          //S4HC AJ: Excluded leafs from filter list
-          filter.options = _.filter(results,function(node) {
-              return node.expandable;
-            })
-              .map(function(node) {
-              return { text: node.text, value: node.text };
-            });
-          console.log('\t\toptions aj:filter '+ filter.name + ' > '+_.pluck(filter.options,'text').join(","));
-          if (filter.includeAll) {
+          templateParam.editing = undefined;
+          templateParam.options = _.map(results, function(node) {
+            return { text: node.text, value: node.text };
+          });
+
+          if (templateParam.includeAll) {
             // S4HC AJ: Rollback of previous 1.5.3 behaviour
             if(endsWithWildcard(filter.query)) {
               filter.options.unshift({text: 'All', value: '*'});
-            }
+            templateParam.options.unshift({text: 'All', value: allExpr});
+          }
             else {
               var allExpr = '{';
               _.each(filter.options, function(option) {
@@ -87,24 +89,22 @@ function (angular, app, _) {
               allExpr = allExpr.substring(0, allExpr.length - 1) + '}';
               filter.options.unshift({text: 'All', value: allExpr});
             }
-          }
-          console.log('\t\toptions end:filter '+ filter.name + ' > '+_.pluck(filter.options,'text').join(","));
 
-          // S4HC AJ: Keep selected filter if exist in filter
-          // TODO: Test what is happening when current filter doesn't exsist anymore
-          var currentFilter = _.omit(filter.current, "$$hashKey");
-          var selectedFilter;
-          if (currentFilter.value==='*') {
-            selectedFilter =  filter.options[0];
-          } else {
-            selectedFilter =_.findWhere(filter.options, currentFilter) || filter.options[0]
+          // if parameter has current value
+          // if it exists in options array keep value
+          if (templateParam.current) {
+            var currentExists = _.findWhere(templateParam.options, { value: templateParam.current.value });
+            if (currentExists) {
+              return $scope.filterOptionSelected(templateParam, templateParam.current, true);
+            }
           }
-          filterSrv.filterOptionSelected(filter, selectedFilter);
+
+          return $scope.filterOptionSelected(templateParam, templateParam.options[0], true);
         });
     };
 
     $scope.add = function() {
-      filterSrv.add({
+      $scope.filter.addTemplateParameter({
         type      : 'filter',
         name      : 'filter name',
         editing   : true,
@@ -112,14 +112,6 @@ function (angular, app, _) {
         //S4HC AJ: Include all turned on by default
         includeAll: true
       });
-    };
-
-    $scope.refresh = function() {
-      dashboard.refresh();
-    };
-
-    $scope.render = function() {
-      $rootScope.$broadcast('render');
     };
     // S4HC AJ: Rollback of previous 1.5.3 behaviour
     function endsWithWildcard(query) {
@@ -129,6 +121,5 @@ function (angular, app, _) {
 
       return query[query.length - 1] === '*';
     }
-
   });
 });
