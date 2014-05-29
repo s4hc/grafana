@@ -27,9 +27,9 @@ function (angular, app, _) {
     _.defaults($scope.panel,_d);
 
     $scope.init = function () {
-      $scope.filterSrv = filterSrv;
       //S4HC AJ: If filter options are empty apply filters
-      _.each(filterSrv.list, function (filter) {
+      //TODO AJ: apply filters will make additional calls for nested filters.
+      _.each($scope.filter.templateParameters, function (filter) {
         if (filter.options.length === 0) {
           $scope.applyFilter(filter);
         }
@@ -77,29 +77,29 @@ function (angular, app, _) {
 
           if (templateParam.includeAll) {
             // S4HC AJ: Rollback of previous 1.5.3 behaviour
-            if(endsWithWildcard(filter.query)) {
-              filter.options.unshift({text: 'All', value: '*'});
-            templateParam.options.unshift({text: 'All', value: allExpr});
-          }
+            if(endsWithWildcard(templateParam.query)) {
+              templateParam.options.unshift({text: 'All', value: '*'});
+            }
             else {
               var allExpr = '{';
-              _.each(filter.options, function(option) {
+              _.each(templateParam.options, function(option) {
                 allExpr += option.text + ',';
               });
               allExpr = allExpr.substring(0, allExpr.length - 1) + '}';
-              filter.options.unshift({text: 'All', value: allExpr});
+              templateParam.options.unshift({text: 'All', value: allExpr});
             }
 
-          // if parameter has current value
-          // if it exists in options array keep value
-          if (templateParam.current) {
-            var currentExists = _.findWhere(templateParam.options, { value: templateParam.current.value });
-            if (currentExists) {
-              return $scope.filterOptionSelected(templateParam, templateParam.current, true);
+            // if parameter has current value
+            // if it exists in options array keep value
+            if (templateParam.current) {
+              var currentExists = _.findWhere(templateParam.options, { value: templateParam.current.value });
+              if (currentExists) {
+                return $scope.filterOptionSelected(templateParam, templateParam.current, true);
+              }
             }
+
+            return $scope.filterOptionSelected(templateParam, templateParam.options[0], true);
           }
-
-          return $scope.filterOptionSelected(templateParam, templateParam.options[0], true);
         });
     };
 
