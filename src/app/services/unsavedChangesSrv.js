@@ -67,7 +67,8 @@ function (angular, _, config) {
       var original = self.original;
 
       // ignore timespan changes
-      current.services.filter.time = original.services.filter.time = {};
+      //S4HC AJ: Ignore time span and filter changes
+      current.services.filter = original.services.filter = {};
 
       current.refresh = original.refresh;
 
